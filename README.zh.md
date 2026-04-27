@@ -145,6 +145,33 @@ uv run dabench <command> --config PATH [options]
 
 所有文件路径都必须是相对于任务 `context/` 目录的相对路径。
 
+## 评测
+
+运行完 benchmark 后，使用 `evaluate.py` 对预测结果与公开标准答案进行评测：
+
+```bash
+# 评测 run 目录下所有任务
+python evaluate.py --run-dir artifacts/runs/<run_id> --gold-dir data/public/output
+
+# 仅评测单个任务
+python evaluate.py --run-dir artifacts/runs/<run_id> --gold-dir data/public/output --task task_11
+
+# 指定自定义 Excel 报告输出路径
+python evaluate.py --run-dir artifacts/runs/<run_id> --gold-dir data/public/output --output-report my_report.xlsx
+```
+
+运行后会自动在 run 目录下生成 `evaluation_report.xlsx`。
+
+**评分规则：**
+
+| 情况 | 结果 |
+| --- | --- |
+| 预测包含所有 gold 列，且值完全一致 | PASS |
+| 预测缺少任意 gold 列 | FAIL（得分 = 0） |
+| 预测多了额外列 | PASS（不影响） |
+| 任一匹配列的值与 gold 不一致 | FAIL（得分 = 0） |
+| 行数不一致 | FAIL（得分 = 0） |
+
 ## 输出
 
 每个任务运行后可能生成：

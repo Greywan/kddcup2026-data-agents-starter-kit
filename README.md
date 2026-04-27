@@ -145,6 +145,33 @@ The baseline exposes these tools to the model:
 
 All file paths passed to tools must be relative to the task `context/` directory.
 
+## Evaluation
+
+After running the benchmark, evaluate predictions against the public ground truth using `evaluate.py`:
+
+```bash
+# Evaluate all tasks in a run
+python evaluate.py --run-dir artifacts/runs/<run_id> --gold-dir data/public/output
+
+# Evaluate a single task
+python evaluate.py --run-dir artifacts/runs/<run_id> --gold-dir data/public/output --task task_11
+
+# Specify a custom output Excel report path
+python evaluate.py --run-dir artifacts/runs/<run_id> --gold-dir data/public/output --output-report my_report.xlsx
+```
+
+An Excel report (`evaluation_report.xlsx`) will be generated in the run directory automatically.
+
+**Scoring rules:**
+
+| Condition | Result |
+| --- | --- |
+| Prediction contains all gold columns, all values match | PASS |
+| Prediction is missing any gold column | FAIL (score = 0) |
+| Prediction has extra columns | PASS (no penalty) |
+| Any matched column value differs from gold | FAIL (score = 0) |
+| Row count differs | FAIL (score = 0) |
+
 ## Outputs
 
 Each successful task run may produce:
